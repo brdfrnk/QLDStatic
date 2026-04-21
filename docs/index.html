@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QLD Manual Calculator</title>
+    <meta
+      name="description"
+      content="Static GitHub Pages calculator for quantitative limiting dilution estimates."
+    >
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero__copy">
+          <p class="eyebrow">Quantitative Limiting Dilution</p>
+          <h1>Manual QLD calculator</h1>
+          <p class="hero__lede">
+            Runs entirely in your browser. No uploads, no backend, no session state.
+          </p>
+        </div>
+        <div class="hero__note">
+          <p class="hero__note-label">Execution model</p>
+          <p>
+            This site is designed for GitHub Pages. The growth grid, optimization, fit curve, and exports
+            are computed on your device with JavaScript.
+          </p>
+        </div>
+      </header>
+
+      <main class="workspace" id="app-root">
+        <section class="panel panel--setup" aria-labelledby="setup-title">
+          <div class="panel__header">
+            <p class="panel__eyebrow">Setup</p>
+            <h2 id="setup-title">Plate definition</h2>
+          </div>
+
+          <div class="field-grid">
+            <label class="field">
+              <span class="field__label">Dilutions</span>
+              <input id="dilution-count" type="text" inputmode="numeric" value="6">
+            </label>
+            <label class="field">
+              <span class="field__label">Replicates</span>
+              <input id="replicate-count" type="text" inputmode="numeric" value="4">
+            </label>
+          </div>
+
+          <label class="field">
+            <span class="field__label">Dilution factor</span>
+            <input id="fold-input" type="text" inputmode="decimal" value="10">
+          </label>
+
+          <div class="button-row">
+            <button id="create-grid" class="button button--primary" type="button">Create grid</button>
+            <button id="load-sample" class="button" type="button">Load sample plate</button>
+          </div>
+
+          <div class="tips">
+            <p><strong>Click</strong> sets a well positive.</p>
+            <p><strong>Right-click</strong> or <strong>Shift-click</strong> sets a well negative.</p>
+            <p><strong>Drag</strong> continues the current paint action.</p>
+            <p><strong>Keyboard</strong>: <kbd>Space</kbd> toggles, <kbd>1</kbd> positive, <kbd>0</kbd> negative.</p>
+          </div>
+        </section>
+
+        <section class="panel panel--estimate" aria-labelledby="estimate-title">
+          <div class="panel__header">
+            <p class="panel__eyebrow">Estimate</p>
+            <h2 id="estimate-title">Current result</h2>
+          </div>
+
+          <p id="estimate-status" class="status" role="status">Build a rectangular grid to begin.</p>
+          <p class="summary-label">Selected wells</p>
+          <p id="selected-summary" class="summary-text">No plate defined yet.</p>
+
+          <div class="metric-grid" aria-label="QLD estimate summary">
+            <article class="metric-card">
+              <p class="metric-card__label">MLE</p>
+              <p id="mle-display" class="metric-card__value">N/A</p>
+            </article>
+            <article class="metric-card">
+              <p class="metric-card__label">95% CI</p>
+              <p id="ci-display" class="metric-card__value">N/A</p>
+            </article>
+            <article class="metric-card">
+              <p class="metric-card__label">Variance</p>
+              <p id="variance-display" class="metric-card__value">N/A</p>
+            </article>
+          </div>
+
+          <section class="export-block" aria-labelledby="summary-export-title">
+            <div class="export-block__header">
+              <div>
+                <p class="summary-label" id="summary-export-title">Summary export</p>
+                <p class="meta-text">Two-row TSV for spreadsheet or plotting software.</p>
+              </div>
+              <button id="copy-summary" class="button" type="button">Copy values</button>
+            </div>
+            <div class="summary-table-shell">
+              <table class="summary-table">
+                <thead>
+                  <tr id="summary-header-row"></tr>
+                </thead>
+                <tbody>
+                  <tr id="summary-value-row"></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="export-block" aria-labelledby="results-export-title">
+            <div class="export-block__header">
+              <div>
+                <p class="summary-label" id="results-export-title">Full results TSV</p>
+                <p class="meta-text">Per-dilution counts plus estimate metadata.</p>
+              </div>
+              <button id="copy-results" class="button" type="button">Copy full TSV</button>
+            </div>
+            <textarea id="results-tsv" class="results-textarea" rows="10" readonly></textarea>
+          </section>
+        </section>
+
+        <section class="panel panel--grid" aria-labelledby="grid-title">
+          <div class="panel__header">
+            <p class="panel__eyebrow">Manual entry</p>
+            <h2 id="grid-title">Growth grid</h2>
+          </div>
+          <div class="grid-caption">
+            <p>Positive wells are marked in green.</p>
+            <p>Each row is one dilution. Each column is one replicate.</p>
+          </div>
+          <div id="growth-grid" class="growth-grid-shell empty-state">
+            Create a grid to start entering growth outcomes.
+          </div>
+        </section>
+
+        <section class="panel panel--curve" aria-labelledby="curve-title">
+          <div class="panel__header">
+            <p class="panel__eyebrow">Fit</p>
+            <h2 id="curve-title">Relative fit function</h2>
+          </div>
+          <p id="curve-caption" class="meta-text">The relative fit plot updates with the selected wells.</p>
+          <div id="likelihood-plot" class="plot-shell empty-state">
+            Create a grid to see the fitted QLD objective.
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer-note">
+        <p>
+          This calculator is a browser reimplementation of the manual QLD workflow. For static hosting,
+          GitHub Pages serves the interface while all calculations happen locally in JavaScript.
+        </p>
+      </footer>
+    </div>
+
+    <noscript>
+      <div class="noscript-banner">JavaScript is required to run the QLD calculator.</div>
+    </noscript>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

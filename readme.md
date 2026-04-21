@@ -37,3 +37,29 @@ Finally, we compute the 95% CI as MLE $$\pm 1.96 \sqrt \sigma$$
 
 See `./test.py`
 
+## Static browser calculator
+
+This repository now also includes a GitHub Pages compatible calculator under `docs/`.
+
+- `docs/index.html` is the static entrypoint.
+- `docs/qld.js` re-implements the QLD calculation path in browser JavaScript.
+- `docs/app.js` renders the manual grid UI, exports, and fit curve with no backend API.
+- `docs/.nojekyll` allows direct static serving on GitHub Pages.
+
+### Local preview
+
+You can open `docs/index.html` directly in a browser for quick checks, or serve the folder with any static file server.
+
+### Node regression tests
+
+```bash
+npm test
+```
+
+These tests verify that the browser implementation stays numerically stable on reference grids and that the site has no runtime backend dependency.
+
+### GitHub Pages deployment
+
+- The static site lives in `docs/`.
+- `.github/workflows/pages.yml` deploys that folder with GitHub Actions.
+- `.github/workflows/ci.yml` runs the node regression suite on pushes and pull requests.

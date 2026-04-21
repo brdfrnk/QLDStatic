@@ -1,0 +1,8 @@
+{
+  "name": "qld-static",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
