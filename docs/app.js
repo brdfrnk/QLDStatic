@@ -1,11 +1,5 @@
 import { estimateQldPayload } from "./qld.js";
 
-const SAMPLE_GRID = [
-  [true, true, false, false],
-  [true, false, false, false],
-  [false, false, false, false],
-];
-
 const state = {
   grid: [],
   pointerValue: null,
@@ -30,7 +24,6 @@ const elements = {
   likelihoodPlot: document.getElementById("likelihood-plot"),
   curveCaption: document.getElementById("curve-caption"),
   createGrid: document.getElementById("create-grid"),
-  loadSample: document.getElementById("load-sample"),
   copySummary: document.getElementById("copy-summary"),
   copyResults: document.getElementById("copy-results"),
 };
@@ -41,16 +34,16 @@ function setStatus(message) {
 
 function resetResults(message) {
   setStatus(message);
-  elements.selectedSummary.textContent = "No plate defined yet.";
+  elements.selectedSummary.textContent = "None yet.";
   elements.mle.textContent = "N/A";
   elements.ci.textContent = "N/A";
   elements.variance.textContent = "N/A";
   elements.resultsTsv.value = "";
   state.summaryTsv = "";
   state.summaryValuesTsv = "";
-  elements.curveCaption.textContent = "The relative fit plot updates with the selected wells.";
-  elements.likelihoodPlot.className = "plot-shell empty-state";
-  elements.likelihoodPlot.textContent = "Create a grid to see the fitted QLD objective.";
+  elements.curveCaption.textContent = "Updates with the selected wells";
+  elements.likelihoodPlot.className = "likelihood-plot empty-state";
+  elements.likelihoodPlot.textContent = "Create a grid to see the fitted upstream QLD objective.";
   renderSummaryTable(["", "", "", "", ""]);
 }
 
@@ -84,7 +77,7 @@ function setCellState(rowIndex, columnIndex, value) {
 function renderGrid() {
   if (!state.grid.length) {
     elements.growthGrid.className = "growth-grid-shell empty-state";
-    elements.growthGrid.textContent = "Create a grid to start entering growth outcomes.";
+    elements.growthGrid.textContent = "Build the grid to start entering wells.";
     return;
   }
 
@@ -173,9 +166,9 @@ function renderSummaryTable(values) {
 
 function renderCurve(curve) {
   if (!curve || !Array.isArray(curve.points) || !curve.points.length) {
-    elements.curveCaption.textContent = "Curve unavailable for this plate.";
-    elements.likelihoodPlot.className = "plot-shell empty-state";
-    elements.likelihoodPlot.textContent = "Curve unavailable for this plate.";
+    elements.curveCaption.textContent = "Curve unavailable for this selection";
+    elements.likelihoodPlot.className = "likelihood-plot empty-state";
+    elements.likelihoodPlot.textContent = "Curve unavailable for this selection.";
     return;
   }
 
@@ -188,8 +181,20 @@ function renderCurve(curve) {
   const logMax = Math.log10(curve.x_max);
   const scaleX = (value) => margin.left + (((Math.log10(value) - logMin) / (logMax - logMin || 1)) * innerWidth);
   const scaleY = (value) => margin.top + ((1 - value) * innerHeight);
-  const linePath = curve.points
-    .map((point, index) => `${index === 0 ? "M" : "L"} ${scaleX(point.x).toFixed(2)} ${scaleY(point.likelihood).toFixed(2)}`)
+  const scaledPoints = curve.points.map((point) => ({
+    x: scaleX(point.x),
+    y: scaleY(point.likelihood),
+  }));
+
+  const linePath = scaledPoints
+    .map((point, index, points) => {
+      if (index === 0) {
+        return `M ${point.x.toFixed(2)} ${point.y.toFixed(2)}`;
+      }
+      const previous = points[index - 1];
+      const midpointX = ((previous.x + point.x) / 2).toFixed(2);
+      return `Q ${previous.x.toFixed(2)} ${previous.y.toFixed(2)} ${midpointX} ${((previous.y + point.y) / 2).toFixed(2)} T ${point.x.toFixed(2)} ${point.y.toFixed(2)}`;
+    })
     .join(" ");
 
   const tickValues = [];
@@ -206,14 +211,21 @@ function renderCurve(curve) {
   }
 
   const markerX = curve.mle_x ? scaleX(curve.mle_x) : null;
+  const guideLevels = [0.25, 0.5, 0.75];
   elements.curveCaption.textContent = curve.mle_x
     ? `Relative fit peaks near the estimated MLE of ${curve.mle_label}.`
-    : "Relative fit computed from the current grid.";
+    : "Updates with the selected wells";
 
-  elements.likelihoodPlot.className = "plot-shell";
+  elements.likelihoodPlot.className = "likelihood-plot";
   elements.likelihoodPlot.innerHTML = `
     <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Relative fit plot for the current QLD estimate">
       <rect class="plot-frame" x="${margin.left}" y="${margin.top}" width="${innerWidth}" height="${innerHeight}" rx="18"></rect>
+      ${guideLevels
+        .map((level) => {
+          const y = scaleY(level);
+          return `<line class="plot-guide" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}"></line>`;
+        })
+        .join("")}
       <line class="plot-axis-line" x1="${margin.left}" y1="${margin.top + innerHeight}" x2="${width - margin.right}" y2="${margin.top + innerHeight}"></line>
       <line class="plot-axis-line" x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${margin.top + innerHeight}"></line>
       ${tickValues
@@ -221,12 +233,12 @@ function renderCurve(curve) {
           const x = scaleX(tick);
           return `
             <line class="plot-axis" x1="${x}" y1="${margin.top + innerHeight}" x2="${x}" y2="${margin.top + innerHeight + 8}"></line>
-            <text class="plot-tick" x="${x}" y="${height - 22}" text-anchor="middle">${tick.toExponential(0).replace("+", "")}</text>
+            <text class="plot-label" x="${x}" y="${height - 22}" text-anchor="middle">${tick.toExponential(0).replace("+", "")}</text>
           `;
         })
         .join("")}
-      <text class="plot-tick" x="${margin.left - 10}" y="${margin.top + innerHeight + 4}" text-anchor="end">0</text>
-      <text class="plot-tick" x="${margin.left - 10}" y="${margin.top + 6}" text-anchor="end">1</text>
+      <text class="plot-label" x="${margin.left - 10}" y="${margin.top + innerHeight + 4}" text-anchor="end">0</text>
+      <text class="plot-label" x="${margin.left - 10}" y="${margin.top + 6}" text-anchor="end">1</text>
       <text class="plot-axis-title" x="${margin.left + innerWidth / 2}" y="${height - 2}" text-anchor="middle">Cell estimate (log scale)</text>
       <text
         class="plot-axis-title"
@@ -235,16 +247,16 @@ function renderCurve(curve) {
         text-anchor="middle"
         transform="rotate(-90 16 ${margin.top + innerHeight / 2})"
       >Relative fit</text>
-      <path class="plot-line" d="${linePath}"></path>
+      <path class="plot-curve" d="${linePath}"></path>
       ${
         markerX === null
           ? ""
           : `
-            <line class="plot-marker" x1="${markerX}" y1="${margin.top}" x2="${markerX}" y2="${margin.top + innerHeight}"></line>
-            <text class="plot-marker-label" x="${Math.min(markerX + 8, width - margin.right - 12)}" y="${margin.top + 16}">${curve.mle_label}</text>
+            <line class="plot-mle" x1="${markerX}" y1="${margin.top}" x2="${markerX}" y2="${margin.top + innerHeight}"></line>
+            <circle class="plot-dot" cx="${markerX}" cy="${scaleY(1)}" r="4"></circle>
+            <text class="plot-label" x="${Math.min(markerX + 8, width - margin.right - 12)}" y="${margin.top + 16}">${curve.mle_label}</text>
           `
       }
-      <circle class="plot-point" cx="${scaleX(curve.points[0].x)}" cy="${scaleY(curve.points[0].likelihood)}" r="0"></circle>
     </svg>
   `;
 }
@@ -267,7 +279,7 @@ function requestEstimate() {
   try {
     const payload = estimateQldPayload(state.grid, elements.foldInput.value);
     setStatus(payload.message);
-    elements.selectedSummary.textContent = payload.summary || "No wells selected.";
+    elements.selectedSummary.textContent = payload.summary || "None yet.";
     elements.mle.textContent = payload.mle_display;
     elements.ci.textContent = payload.ci_display;
     elements.variance.textContent = payload.variance_display;
@@ -318,18 +330,8 @@ function createGridFromInputs() {
   }
 }
 
-function loadSampleGrid() {
-  state.grid = SAMPLE_GRID.map((row) => row.slice());
-  elements.dilutionCount.value = String(state.grid.length);
-  elements.replicateCount.value = String(state.grid[0].length);
-  elements.foldInput.value = "10.15";
-  renderGrid();
-  requestEstimate();
-}
-
 function bindEvents() {
   elements.createGrid.addEventListener("click", createGridFromInputs);
-  elements.loadSample.addEventListener("click", loadSampleGrid);
   elements.foldInput.addEventListener("input", scheduleEstimate);
   elements.copySummary.addEventListener("click", () => copyText(state.summaryTsv, "Summary TSV copied."));
   elements.copyResults.addEventListener("click", () => copyText(elements.resultsTsv.value, "Full TSV copied."));

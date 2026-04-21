@@ -104,5 +104,6 @@ test("frontend remains fully static", () => {
   const htmlSource = fs.readFileSync(path.resolve("docs/index.html"), "utf8");
   assert.ok(!appSource.includes("fetch("));
   assert.ok(!appSource.includes("/api/"));
-  assert.ok(htmlSource.includes("Runs entirely in your browser."));
+  assert.ok(htmlSource.includes("Manual QLD calculator"));
+  assert.ok(htmlSource.includes("Relative fit function"));
 });

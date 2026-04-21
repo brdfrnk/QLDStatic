@@ -1,4 +1,4 @@
-const DEFAULT_SAMPLE_COUNT = 96;
+const DEFAULT_SAMPLE_COUNT = 240;
 const SUMMARY_HEADERS = ["Dilution factor", "MLE", "CI lower", "CI upper", "Variance"];
 const NON_ZERO_DELTA = 0.05;
 const ZERO_DELTA = 0.00025;
@@ -366,7 +366,26 @@ export function buildLikelihoodCurve(grid, fold, result, sampleCount = DEFAULT_S
     fitValues.push(shpmError(x, grid, fold));
   }
 
-  const finiteValues = fitValues.filter((value) => Number.isFinite(value));
+  const smoothedFitValues = fitValues.map((value, index, values) => {
+    if (!Number.isFinite(value)) {
+      return Number.POSITIVE_INFINITY;
+    }
+
+    let weightedTotal = 0;
+    let weightSum = 0;
+    for (let offset = -2; offset <= 2; offset += 1) {
+      const target = values[index + offset];
+      if (!Number.isFinite(target)) {
+        continue;
+      }
+      const weight = 3 - Math.abs(offset);
+      weightedTotal += target * weight;
+      weightSum += weight;
+    }
+    return weightSum > 0 ? weightedTotal / weightSum : value;
+  });
+
+  const finiteValues = smoothedFitValues.filter((value) => Number.isFinite(value));
   if (!finiteValues.length) {
     return null;
   }
@@ -383,7 +402,7 @@ export function buildLikelihoodCurve(grid, fold, result, sampleCount = DEFAULT_S
     mle_label: formatNumber(result.mle),
     points: xValues.map((x, index) => ({
       x,
-      likelihood: Number.isFinite(fitValues[index]) ? Math.exp(-(fitValues[index] - minFit) / scale) : 0,
+      likelihood: Number.isFinite(smoothedFitValues[index]) ? Math.exp(-(smoothedFitValues[index] - minFit) / scale) : 0,
     })),
   };
 }
