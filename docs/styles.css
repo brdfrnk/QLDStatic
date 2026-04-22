@@ -82,13 +82,14 @@ p {
   margin-bottom: 2rem;
 }
 
-.eyebrow {
-  display: inline-block;
-  margin-bottom: 0.8rem;
-  color: #666;
-  font-size: 1.2rem;
-  letter-spacing: 0.12rem;
-  text-transform: uppercase;
+.page-header a {
+  color: var(--viewer-link);
+  word-break: break-all;
+}
+
+.page-header a:hover,
+.page-header a:focus {
+  color: var(--viewer-link-hover);
 }
 
 .card {
@@ -284,6 +285,13 @@ button {
   gap: 0.15rem;
 }
 
+.summary-export__actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .summary-export__table-shell {
   overflow-x: auto;
   border: 1px solid rgba(33, 44, 39, 0.1);
@@ -354,7 +362,7 @@ button {
 
 .plot-frame {
   fill: #fff;
-  stroke: rgba(0, 0, 0, 0.08);
+  stroke: none;
 }
 
 .plot-axis {
@@ -544,6 +552,11 @@ button {
   .tool-grid-help {
     justify-items: start;
     text-align: left;
+  }
+
+  .summary-export__actions {
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .summary-export__table {

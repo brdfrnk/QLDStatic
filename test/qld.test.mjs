@@ -106,4 +106,9 @@ test("frontend remains fully static", () => {
   assert.ok(!appSource.includes("/api/"));
   assert.ok(htmlSource.includes("Manual QLD calculator"));
   assert.ok(htmlSource.includes("Relative fit function"));
+  assert.ok(!htmlSource.includes(">Utility<"));
+  assert.ok(htmlSource.includes('id="dilution-count" type="text" value="6"'));
+  assert.ok(htmlSource.includes("Copy results only"));
+  assert.ok(htmlSource.includes("Copy results and data input"));
+  assert.ok(!htmlSource.includes("Full results TSV"));
 });

@@ -14,9 +14,12 @@
     <main class="page">
       <div class="container">
         <div class="page-header">
-          <span class="eyebrow">Utility</span>
           <h1>Manual QLD calculator</h1>
-          <p class="muted">Estimate limiting-dilution MLE with the upstream QuantitativeLimitingDilutions package.</p>
+          <p class="muted">
+            Maximum Likelihood Estimation (MLE) used with limiting dilutions to estimate the number of organisms in a given volume. The value "MLE" is therefore the number of organisms pipetted into the first well, and diluted with this dilution factor across a series. "# of dilutions" is the amount of grown wells in your sample, and "# of replicates" is the amount of replicate dilution series you used. The optimal experiment is 4 replicate dilution series, where you have done 3 experimental replicates, or in other words, you have diluted 1 treatment 12 times. This implementation is written by Amogh Jalihal,
+            <a href="https://github.com/springerlab/QuantitativeLimitingDilutions">https://github.com/springerlab/QuantitativeLimitingDilutions</a>.
+            All calculations are made locally in web.
+          </p>
         </div>
 
         <section class="tool-page-stack">
@@ -30,7 +33,7 @@
               <div class="tool-setup-row">
                 <label>
                   <span class="field-label"># of dilutions</span>
-                  <input id="dilution-count" type="text" value="3" inputmode="numeric">
+                  <input id="dilution-count" type="text" value="6" inputmode="numeric">
                 </label>
                 <label>
                   <span class="field-label"># of replicates</span>
@@ -48,8 +51,8 @@
               </div>
 
               <p class="hint">
-                Enter the dilution and replicate counts once, then click cells to mark growth.
-                Shift-click or right-click clears cells. Dragging continues the current paint action.
+                Enter the dilution and replicate counts once, then click or drag across cells to mark growth.
+                Shift-drag or right-drag clears cells back to negative.
               </p>
             </div>
 
@@ -83,7 +86,10 @@
                     <span class="field-label">Summary export</span>
                     <span class="meta-line">Two-row TSV for graphing software</span>
                   </div>
-                  <button id="copy-summary" type="button">Copy values</button>
+                  <div class="summary-export__actions">
+                    <button id="copy-summary" type="button">Copy results only</button>
+                    <button id="copy-results" type="button">Copy results and data input</button>
+                  </div>
                 </div>
                 <div class="summary-export__table-shell">
                   <table class="summary-export__table">
@@ -97,13 +103,6 @@
                 </div>
               </div>
 
-              <div class="results-export">
-                <div class="results-export__header">
-                  <span class="field-label">Full results TSV</span>
-                  <button id="copy-results" type="button">Copy full TSV</button>
-                </div>
-                <textarea id="results-tsv" rows="10" readonly></textarea>
-              </div>
             </div>
           </div>
 
@@ -112,7 +111,7 @@
               <h2>Growth grid</h2>
               <div class="tool-grid-help">
                 <span class="meta-line">Positive wells are shaded green.</span>
-                <span class="meta-line">Click to change status to positive, click and drag to change many, right click to change status to negative.</span>
+                <span class="meta-line">Click or drag to paint positive wells. Right-click or hold Shift while dragging to paint negative wells.</span>
               </div>
             </div>
             <div id="growth-grid" class="growth-grid-shell empty-state">Build the grid to start entering wells.</div>

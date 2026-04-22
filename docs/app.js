@@ -4,6 +4,7 @@ const state = {
   grid: [],
   pointerValue: null,
   estimateTimer: null,
+  resultsTsv: "",
   summaryTsv: "",
   summaryValuesTsv: "",
 };
@@ -20,7 +21,6 @@ const elements = {
   variance: document.getElementById("variance-display"),
   summaryHeaderRow: document.getElementById("summary-header-row"),
   summaryValueRow: document.getElementById("summary-value-row"),
-  resultsTsv: document.getElementById("results-tsv"),
   likelihoodPlot: document.getElementById("likelihood-plot"),
   curveCaption: document.getElementById("curve-caption"),
   createGrid: document.getElementById("create-grid"),
@@ -38,7 +38,7 @@ function resetResults(message) {
   elements.mle.textContent = "N/A";
   elements.ci.textContent = "N/A";
   elements.variance.textContent = "N/A";
-  elements.resultsTsv.value = "";
+  state.resultsTsv = "";
   state.summaryTsv = "";
   state.summaryValuesTsv = "";
   elements.curveCaption.textContent = "Updates with the selected wells";
@@ -116,7 +116,6 @@ function renderGrid() {
         const nextValue = event.button === 2 || event.shiftKey ? false : true;
         state.pointerValue = nextValue;
         setCellState(rowIndex, columnIndex, nextValue);
-        button.setPointerCapture?.(event.pointerId);
         event.preventDefault();
       });
       button.addEventListener("pointerenter", (event) => {
@@ -219,7 +218,7 @@ function renderCurve(curve) {
   elements.likelihoodPlot.className = "likelihood-plot";
   elements.likelihoodPlot.innerHTML = `
     <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Relative fit plot for the current QLD estimate">
-      <rect class="plot-frame" x="${margin.left}" y="${margin.top}" width="${innerWidth}" height="${innerHeight}" rx="18"></rect>
+      <rect class="plot-frame" x="${margin.left}" y="${margin.top}" width="${innerWidth}" height="${innerHeight}"></rect>
       ${guideLevels
         .map((level) => {
           const y = scaleY(level);
@@ -283,7 +282,7 @@ function requestEstimate() {
     elements.mle.textContent = payload.mle_display;
     elements.ci.textContent = payload.ci_display;
     elements.variance.textContent = payload.variance_display;
-    elements.resultsTsv.value = payload.results_tsv;
+    state.resultsTsv = payload.results_tsv;
     state.summaryTsv = payload.summary_tsv;
     state.summaryValuesTsv = (payload.summary_values || []).join("\t");
     renderSummaryTable(payload.summary_values || []);
@@ -334,7 +333,7 @@ function bindEvents() {
   elements.createGrid.addEventListener("click", createGridFromInputs);
   elements.foldInput.addEventListener("input", scheduleEstimate);
   elements.copySummary.addEventListener("click", () => copyText(state.summaryTsv, "Summary TSV copied."));
-  elements.copyResults.addEventListener("click", () => copyText(elements.resultsTsv.value, "Full TSV copied."));
+  elements.copyResults.addEventListener("click", () => copyText(state.resultsTsv, "Detailed results TSV copied."));
   window.addEventListener("pointerup", () => {
     state.pointerValue = null;
   });
