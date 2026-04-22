@@ -433,6 +433,8 @@ button {
   padding: 0.4rem 0.1rem 0.1rem;
   border-radius: 12px;
   background: transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .growth-grid-shell.empty-state {
@@ -500,6 +502,7 @@ button {
   font-weight: 600;
   line-height: 1;
   text-transform: none;
+  touch-action: none;
   transition: border-color 120ms ease, background-color 120ms ease;
 }
 

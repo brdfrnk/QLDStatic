@@ -59,6 +59,22 @@ function buildGrid(dilutions, replicates) {
   return Array.from({ length: dilutions }, () => Array.from({ length: replicates }, () => false));
 }
 
+function getCellCoordinates(node) {
+  const cellId = node?.dataset?.cell;
+  if (!cellId) {
+    return null;
+  }
+
+  const [rowText, columnText] = cellId.split(":");
+  const rowIndex = Number.parseInt(rowText, 10);
+  const columnIndex = Number.parseInt(columnText, 10);
+  if (!Number.isInteger(rowIndex) || !Number.isInteger(columnIndex)) {
+    return null;
+  }
+
+  return { rowIndex, columnIndex };
+}
+
 function setCellState(rowIndex, columnIndex, value) {
   if (!state.grid[rowIndex] || state.grid[rowIndex][columnIndex] === value) {
     return;
@@ -72,6 +88,27 @@ function setCellState(rowIndex, columnIndex, value) {
     button.setAttribute("aria-pressed", value ? "true" : "false");
   }
   scheduleEstimate();
+}
+
+function paintCellFromHoverTarget(target) {
+  if (state.pointerValue === null) {
+    return;
+  }
+
+  if (!target || !elements.growthGrid.contains(target)) {
+    return;
+  }
+
+  const coordinates = getCellCoordinates(target);
+  if (!coordinates) {
+    return;
+  }
+
+  setCellState(coordinates.rowIndex, coordinates.columnIndex, state.pointerValue);
+}
+
+function clearPointerPaint() {
+  state.pointerValue = null;
 }
 
 function renderGrid() {
@@ -112,20 +149,11 @@ function renderGrid() {
       button.setAttribute("aria-label", `Dilution ${rowIndex + 1}, replicate ${columnIndex + 1}`);
       button.setAttribute("aria-pressed", value ? "true" : "false");
       button.addEventListener("contextmenu", (event) => event.preventDefault());
-      button.addEventListener("pointerdown", (event) => {
+      button.addEventListener("mousedown", (event) => {
         const nextValue = event.button === 2 || event.shiftKey ? false : true;
         state.pointerValue = nextValue;
         setCellState(rowIndex, columnIndex, nextValue);
         event.preventDefault();
-      });
-      button.addEventListener("pointerenter", (event) => {
-        if (state.pointerValue === null || event.buttons === 0) {
-          return;
-        }
-        setCellState(rowIndex, columnIndex, state.pointerValue);
-      });
-      button.addEventListener("pointerup", () => {
-        state.pointerValue = null;
       });
       button.addEventListener("keydown", (event) => {
         if (event.key === " " || event.key === "Enter") {
@@ -334,9 +362,11 @@ function bindEvents() {
   elements.foldInput.addEventListener("input", scheduleEstimate);
   elements.copySummary.addEventListener("click", () => copyText(state.summaryTsv, "Summary TSV copied."));
   elements.copyResults.addEventListener("click", () => copyText(state.resultsTsv, "Detailed results TSV copied."));
-  window.addEventListener("pointerup", () => {
-    state.pointerValue = null;
+  elements.growthGrid.addEventListener("mouseover", (event) => {
+    paintCellFromHoverTarget(event.target.closest("[data-cell]"));
   });
+  window.addEventListener("mouseup", clearPointerPaint);
+  window.addEventListener("blur", clearPointerPaint);
 }
 
 function init() {
