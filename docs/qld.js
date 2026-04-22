@@ -358,51 +358,36 @@ export function buildLikelihoodCurve(grid, fold, result, sampleCount = DEFAULT_S
   const logMin = Math.log10(xMin);
   const logMax = Math.log10(xMax);
   const xValues = [];
-  const fitValues = [];
+  const objectiveValues = [];
 
   for (let index = 0; index < sampleCount; index += 1) {
     const x = 10 ** (logMin + (((logMax - logMin) * index) / (sampleCount - 1)));
     xValues.push(x);
-    fitValues.push(shpmError(x, grid, fold));
+    objectiveValues.push(poissonJoint(x, grid, fold));
   }
 
-  const smoothedFitValues = fitValues.map((value, index, values) => {
-    if (!Number.isFinite(value)) {
-      return Number.POSITIVE_INFINITY;
-    }
-
-    let weightedTotal = 0;
-    let weightSum = 0;
-    for (let offset = -2; offset <= 2; offset += 1) {
-      const target = values[index + offset];
-      if (!Number.isFinite(target)) {
-        continue;
-      }
-      const weight = 3 - Math.abs(offset);
-      weightedTotal += target * weight;
-      weightSum += weight;
-    }
-    return weightSum > 0 ? weightedTotal / weightSum : value;
-  });
-
-  const finiteValues = smoothedFitValues.filter((value) => Number.isFinite(value));
+  const finiteValues = objectiveValues.filter((value) => Number.isFinite(value));
   if (!finiteValues.length) {
     return null;
   }
 
-  const minFit = Math.min(...finiteValues);
-  const maxFit = Math.max(...finiteValues);
-  const spread = Math.max(maxFit - minFit, 1e-12);
-  const scale = Math.max(spread / 6, 1e-12);
+  let peakIndex = 0;
+  let peakObjective = Number.POSITIVE_INFINITY;
+  objectiveValues.forEach((value, index) => {
+    if (Number.isFinite(value) && value < peakObjective) {
+      peakObjective = value;
+      peakIndex = index;
+    }
+  });
 
   return {
     x_min: xMin,
     x_max: xMax,
-    mle_x: isFiniteNumber(result.mle) && result.mle > 0 ? result.mle : null,
-    mle_label: formatNumber(result.mle),
+    peak_x: xValues[peakIndex],
+    peak_label: formatNumber(xValues[peakIndex]),
     points: xValues.map((x, index) => ({
       x,
-      likelihood: Number.isFinite(smoothedFitValues[index]) ? Math.exp(-(smoothedFitValues[index] - minFit) / scale) : 0,
+      likelihood: Number.isFinite(objectiveValues[index]) ? Math.exp(-(objectiveValues[index] - peakObjective)) : 0,
     })),
   };
 }

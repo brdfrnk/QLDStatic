@@ -74,7 +74,17 @@ test("calculator fixtures remain numerically stable", () => {
     const bestPoint = payload.curve.points.reduce((best, point) =>
       point.likelihood > best.likelihood ? point : best,
     );
-    assert.ok(Math.abs(bestPoint.x - payload.mle) / payload.mle < 0.2, `${fixture.name} curve peak tracks MLE`);
+    let objectivePeak = { x: null, fx: Number.POSITIVE_INFINITY };
+    for (const point of payload.curve.points) {
+      const fx = poissonJoint(point.x, fixture.grid, fixture.fold);
+      if (fx < objectivePeak.fx) {
+        objectivePeak = { x: point.x, fx };
+      }
+    }
+    assert.ok(
+      Math.abs(bestPoint.x - objectivePeak.x) / objectivePeak.x < 1e-9,
+      `${fixture.name} curve peak tracks Poisson objective`,
+    );
     assert.equal(payload.mle_display, fixture.expected.mle_display, `${fixture.name} mle display`);
     assert.equal(payload.ci_display, fixture.expected.ci_display, `${fixture.name} ci display`);
     assert.equal(payload.variance_display, fixture.expected.variance_display, `${fixture.name} variance display`);

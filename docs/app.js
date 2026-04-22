@@ -191,6 +191,10 @@ function renderSummaryTable(values) {
     .join("");
 }
 
+function formatPowerLabel(power) {
+  return `10^${power}`;
+}
+
 function renderCurve(curve) {
   if (!curve || !Array.isArray(curve.points) || !curve.points.length) {
     elements.curveCaption.textContent = "Curve unavailable for this selection";
@@ -230,17 +234,20 @@ function renderCurve(curve) {
   for (let power = firstPower; power <= lastPower; power += 1) {
     const tick = 10 ** power;
     if (tick >= curve.x_min && tick <= curve.x_max) {
-      tickValues.push(tick);
+      tickValues.push({ value: tick, label: formatPowerLabel(power) });
     }
   }
   if (!tickValues.length) {
-    tickValues.push(curve.x_min, curve.x_max);
+    tickValues.push(
+      { value: curve.x_min, label: formatPowerLabel(Math.round(Math.log10(curve.x_min))) },
+      { value: curve.x_max, label: formatPowerLabel(Math.round(Math.log10(curve.x_max))) },
+    );
   }
 
-  const markerX = curve.mle_x ? scaleX(curve.mle_x) : null;
+  const markerX = curve.peak_x ? scaleX(curve.peak_x) : null;
   const guideLevels = [0.25, 0.5, 0.75];
-  elements.curveCaption.textContent = curve.mle_x
-    ? `Relative fit peaks near the estimated MLE of ${curve.mle_label}.`
+  elements.curveCaption.textContent = curve.peak_x
+    ? `Relative Poisson likelihood peaks near ${curve.peak_label}.`
     : "Updates with the selected wells";
 
   elements.likelihoodPlot.className = "likelihood-plot";
@@ -257,10 +264,10 @@ function renderCurve(curve) {
       <line class="plot-axis-line" x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${margin.top + innerHeight}"></line>
       ${tickValues
         .map((tick) => {
-          const x = scaleX(tick);
+          const x = scaleX(tick.value);
           return `
             <line class="plot-axis" x1="${x}" y1="${margin.top + innerHeight}" x2="${x}" y2="${margin.top + innerHeight + 8}"></line>
-            <text class="plot-label" x="${x}" y="${height - 22}" text-anchor="middle">${tick.toExponential(0).replace("+", "")}</text>
+            <text class="plot-label" x="${x}" y="${height - 22}" text-anchor="middle">${tick.label}</text>
           `;
         })
         .join("")}
@@ -281,7 +288,7 @@ function renderCurve(curve) {
           : `
             <line class="plot-mle" x1="${markerX}" y1="${margin.top}" x2="${markerX}" y2="${margin.top + innerHeight}"></line>
             <circle class="plot-dot" cx="${markerX}" cy="${scaleY(1)}" r="4"></circle>
-            <text class="plot-label" x="${Math.min(markerX + 8, width - margin.right - 12)}" y="${margin.top + 16}">${curve.mle_label}</text>
+            <text class="plot-label" x="${Math.min(markerX + 8, width - margin.right - 12)}" y="${margin.top + 16}">${curve.peak_label}</text>
           `
       }
     </svg>
