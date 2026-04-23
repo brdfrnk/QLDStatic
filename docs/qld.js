@@ -333,14 +333,14 @@ function curveUpperBound(observations, fold, result) {
 }
 
 function curveLowerBound(xMax, result) {
-  const candidates = [xMax / 1000, 1e-9];
+  const candidates = [xMax / 1000, 1e-3];
   if (isFiniteNumber(result.mle) && result.mle > 0) {
     candidates.push(result.mle / 40);
   }
   if (isFiniteNumber(result.lower) && result.lower > 0) {
     candidates.push(result.lower / 3);
   }
-  return Math.max(1e-9, Math.min(...candidates.filter((value) => value > 0 && Number.isFinite(value))));
+  return Math.max(1e-3, Math.min(...candidates.filter((value) => value > 0 && Number.isFinite(value))));
 }
 
 export function buildLikelihoodCurve(grid, fold, result, sampleCount = DEFAULT_SAMPLE_COUNT) {
@@ -352,7 +352,7 @@ export function buildLikelihoodCurve(grid, fold, result, sampleCount = DEFAULT_S
   const xMax = curveUpperBound(observations, fold, result);
   let xMin = curveLowerBound(xMax, result);
   if (!(xMin > 0) || xMin >= xMax) {
-    xMin = Math.max(xMax / 1000, 1e-9);
+    xMin = Math.max(xMax / 1000, 1e-3);
   }
 
   const logMin = Math.log10(xMin);

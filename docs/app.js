@@ -312,7 +312,7 @@ function requestEstimate() {
 
   try {
     const payload = estimateQldPayload(state.grid, elements.foldInput.value);
-    setStatus(payload.message);
+    setStatus("");
     elements.selectedSummary.textContent = payload.summary || "None yet.";
     elements.mle.textContent = payload.mle_display;
     elements.ci.textContent = payload.ci_display;

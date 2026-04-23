@@ -183,12 +183,24 @@ button {
   border-color: #185a36;
 }
 
+.button-soft-success {
+  background: rgba(31, 111, 67, 0.12);
+  border-color: rgba(31, 111, 67, 0.26);
+  color: #1f6f43;
+}
+
+.button-soft-success:hover,
+.button-soft-success:focus {
+  background: rgba(31, 111, 67, 0.18);
+  border-color: rgba(31, 111, 67, 0.34);
+}
+
 .tool-page-stack {
   display: grid;
   gap: 1.6rem;
 }
 
-.tool-page-grid {
+.tool-workspace-grid {
   display: grid;
   gap: 1.6rem;
   align-items: stretch;
@@ -203,6 +215,7 @@ button {
 .tool-setup-card {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
 .calculator-grid-card {
@@ -216,24 +229,25 @@ button {
   text-align: right;
 }
 
-.tool-setup-row {
+.tool-setup-fields {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
 }
 
-.tool-fold-field {
+.tool-input-field {
   display: block;
-  margin-top: 1rem;
 }
 
 .hint {
-  margin-top: 1rem;
+  margin-top: 0.2rem;
   color: #5f5c4a;
   font-size: 1.35rem;
 }
 
-.tool-status,
+.tool-status:empty {
+  display: none;
+}
+
 .tool-selection {
   min-height: 2.4rem;
 }
@@ -275,21 +289,17 @@ button {
 .summary-export__header {
   display: flex;
   gap: 0.8rem;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-}
-
-.summary-export__header > div {
-  display: grid;
-  gap: 0.15rem;
 }
 
 .summary-export__actions {
   display: flex;
   gap: 0.8rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .summary-export__table-shell {
@@ -542,16 +552,12 @@ button {
 }
 
 @media (min-width: 900px) {
-  .tool-page-grid {
-    grid-template-columns: minmax(280px, 360px) 1fr;
+  .tool-workspace-grid {
+    grid-template-columns: minmax(250px, 300px) minmax(0, 1fr);
   }
 }
 
 @media (max-width: 640px) {
-  .tool-setup-row {
-    grid-template-columns: 1fr;
-  }
-
   .tool-grid-help {
     justify-items: start;
     text-align: left;
@@ -560,6 +566,7 @@ button {
   .summary-export__actions {
     width: 100%;
     justify-content: flex-start;
+    flex-wrap: wrap;
   }
 
   .summary-export__table {

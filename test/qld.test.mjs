@@ -118,7 +118,10 @@ test("frontend remains fully static", () => {
   assert.ok(htmlSource.includes("Relative fit function"));
   assert.ok(!htmlSource.includes(">Utility<"));
   assert.ok(htmlSource.includes('id="dilution-count" type="text" value="6"'));
+  assert.ok(htmlSource.includes("Experiment Shape"));
   assert.ok(htmlSource.includes("Copy results only"));
   assert.ok(htmlSource.includes("Copy results and data input"));
   assert.ok(!htmlSource.includes("Full results TSV"));
+  assert.ok(!htmlSource.includes("Two-row TSV for graphing software"));
+  assert.ok(!htmlSource.includes("Estimate computed."));
 });

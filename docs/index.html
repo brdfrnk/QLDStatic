@@ -28,28 +28,26 @@
         </div>
 
         <section class="tool-page-stack">
-          <div class="tool-page-grid">
+          <div class="tool-workspace-grid">
             <div class="card card--soft tool-setup-card">
               <div class="section-header">
-                <h2>Input</h2>
-                <span class="meta-line">Manual entry</span>
+                <h2>Experiment Shape</h2>
               </div>
 
-              <div class="tool-setup-row">
-                <label>
+              <div class="tool-setup-fields">
+                <label class="tool-input-field">
                   <span class="field-label"># of dilutions</span>
                   <input id="dilution-count" type="text" value="6" inputmode="numeric">
                 </label>
-                <label>
+                <label class="tool-input-field">
                   <span class="field-label"># of replicates</span>
                   <input id="replicate-count" type="text" value="4" inputmode="numeric">
                 </label>
+                <label class="tool-input-field">
+                  <span class="field-label">Dilution factor</span>
+                  <input id="fold-input" type="text" value="10" inputmode="decimal">
+                </label>
               </div>
-
-              <label class="tool-fold-field">
-                <span class="field-label">Dilution factor</span>
-                <input id="fold-input" type="text" value="10" inputmode="decimal">
-              </label>
 
               <div class="button-row">
                 <button id="create-grid" class="button-primary" type="button">Create grid</button>
@@ -61,12 +59,24 @@
               </p>
             </div>
 
+            <div class="card calculator-grid-card">
+              <div class="section-header">
+                <h2>Growth grid</h2>
+                <div class="tool-grid-help">
+                  <span class="meta-line">Positive wells are shaded green.</span>
+                  <span class="meta-line">Click or drag to paint positive wells. Right-click or hold Shift while dragging to paint negative wells.</span>
+                </div>
+              </div>
+              <div id="growth-grid" class="growth-grid-shell empty-state">Build the grid to start entering wells.</div>
+            </div>
+          </div>
+
             <div class="card tool-estimate-card">
               <div class="section-header">
                 <h2>Estimate</h2>
               </div>
 
-              <p id="estimate-status" class="tool-status" role="status">Define dilution replicates, then build the grid.</p>
+              <p id="estimate-status" class="tool-status" role="status"></p>
               <p class="muted">Selected wells</p>
               <p id="selected-summary" class="tool-selection">None yet.</p>
 
@@ -87,12 +97,9 @@
 
               <div class="summary-export">
                 <div class="summary-export__header">
-                  <div>
-                    <span class="field-label">Summary export</span>
-                    <span class="meta-line">Two-row TSV for graphing software</span>
-                  </div>
+                  <span class="field-label">Summary export</span>
                   <div class="summary-export__actions">
-                    <button id="copy-summary" type="button">Copy results only</button>
+                    <button id="copy-summary" class="button-soft-success" type="button">Copy results only</button>
                     <button id="copy-results" type="button">Copy results and data input</button>
                   </div>
                 </div>
@@ -107,20 +114,7 @@
                   </table>
                 </div>
               </div>
-
             </div>
-          </div>
-
-          <div class="card calculator-grid-card">
-            <div class="section-header">
-              <h2>Growth grid</h2>
-              <div class="tool-grid-help">
-                <span class="meta-line">Positive wells are shaded green.</span>
-                <span class="meta-line">Click or drag to paint positive wells. Right-click or hold Shift while dragging to paint negative wells.</span>
-              </div>
-            </div>
-            <div id="growth-grid" class="growth-grid-shell empty-state">Build the grid to start entering wells.</div>
-          </div>
 
           <div class="card likelihood-card">
             <div class="section-header">
