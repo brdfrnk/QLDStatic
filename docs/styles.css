@@ -466,16 +466,17 @@ button {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 1.1rem;
-  align-items: center;
+  align-items: start;
 }
 
 .growth-grid-layout__y-title {
-  align-self: stretch;
+  align-self: start;
   display: grid;
   place-items: center;
-  min-width: 2.4rem;
+  min-width: 3.2rem;
+  margin-top: 3.2rem;
   color: #4d564d;
-  font-size: 1.18rem;
+  font-size: 1.72rem;
   font-weight: 600;
   letter-spacing: 0.08rem;
   text-transform: uppercase;
@@ -492,7 +493,7 @@ button {
   width: max-content;
   min-width: 0;
   border-collapse: separate;
-  border-spacing: 0.08rem;
+  border-spacing: 0.14rem 0.16rem;
   background: transparent;
 }
 
@@ -512,11 +513,11 @@ button {
 }
 
 .growth-grid__corner {
-  min-width: 2.6rem;
+  width: 3.2rem;
 }
 
 .growth-grid__axis-title {
-  padding: 0.1rem 0.28rem 0.2rem;
+  padding: 0 0.28rem 0.3rem;
   text-align: center;
   color: #4d564d;
   font-size: 1.18rem;
@@ -526,7 +527,7 @@ button {
 }
 
 .growth-grid__replicate-label {
-  padding: 0.05rem 0.28rem 0.45rem;
+  padding: 0 0.28rem 0.8rem;
   text-align: center;
   color: #4d564d;
   font-size: 1.45rem;
@@ -534,7 +535,8 @@ button {
 }
 
 .growth-grid__row-label {
-  padding: 0 0.85rem 0 0;
+  width: 3.2rem;
+  padding: 0 1rem 0 0;
   text-align: right;
   color: #354235;
   font-size: 1.5rem;
@@ -542,9 +544,11 @@ button {
 }
 
 .growth-grid__count-title {
-  padding-left: 0.8rem;
-  min-width: 3.6rem;
+  width: 4.8rem;
+  padding-left: 0.55rem;
+  padding-top: 3.2rem;
   text-align: center;
+  vertical-align: middle;
 }
 
 .growth-grid__count-title span {
@@ -555,7 +559,7 @@ button {
   letter-spacing: 0.08rem;
   text-transform: uppercase;
   writing-mode: vertical-rl;
-  transform: rotate(180deg);
+  transform: none;
 }
 
 .growth-grid__cell {
@@ -592,10 +596,11 @@ button {
 .growth-grid__summary {
   display: inline-block;
   min-width: 4.2rem;
-  padding-left: 0.25rem;
+  padding-left: 0.55rem;
   color: #556055;
   font-size: 1.4rem;
   font-weight: 600;
+  text-align: center;
 }
 
 .noscript-banner {
