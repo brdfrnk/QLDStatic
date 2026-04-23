@@ -124,4 +124,6 @@ test("frontend remains fully static", () => {
   assert.ok(!htmlSource.includes("Full results TSV"));
   assert.ok(!htmlSource.includes("Two-row TSV for graphing software"));
   assert.ok(!htmlSource.includes("Estimate computed."));
+  assert.ok(htmlSource.includes("This implementation is written by Amogh Jalihal"));
+  assert.ok(htmlSource.includes('The value "MLE" is therefore the number of organisms pipetted into the first well'));
 });

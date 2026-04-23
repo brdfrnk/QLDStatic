@@ -364,6 +364,21 @@ button {
   background: transparent;
 }
 
+.likelihood-notes {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid rgba(31, 111, 67, 0.12);
+  border-radius: 10px;
+  background: rgba(242, 245, 241, 0.7);
+}
+
+.likelihood-notes p {
+  margin-bottom: 0;
+  color: #415041;
+}
+
 .likelihood-plot svg {
   display: block;
   width: 100%;
@@ -447,6 +462,27 @@ button {
   -webkit-user-select: none;
 }
 
+.growth-grid-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.1rem;
+  align-items: center;
+}
+
+.growth-grid-layout__y-title {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  min-width: 2.4rem;
+  color: #4d564d;
+  font-size: 1.18rem;
+  font-weight: 600;
+  letter-spacing: 0.08rem;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
 .growth-grid-shell.empty-state {
   display: grid;
   place-items: center;
@@ -475,40 +511,62 @@ button {
   white-space: nowrap;
 }
 
-.growth-grid thead th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: transparent;
-  padding: 0.15rem 0.28rem 0.35rem;
+.growth-grid__corner {
+  min-width: 2.6rem;
+}
+
+.growth-grid__axis-title {
+  padding: 0.1rem 0.28rem 0.2rem;
+  text-align: center;
   color: #4d564d;
   font-size: 1.18rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05rem;
 }
 
-.growth-grid thead th:first-child,
-.growth-grid tbody th {
-  padding: 0.15rem 0.65rem 0.15rem 0;
-  text-align: left;
-  color: #354235;
+.growth-grid__replicate-label {
+  padding: 0.05rem 0.28rem 0.45rem;
+  text-align: center;
+  color: #4d564d;
+  font-size: 1.45rem;
   font-weight: 600;
 }
 
-.growth-grid td:last-child,
-.growth-grid th:last-child {
-  padding-left: 0.6rem;
+.growth-grid__row-label {
+  padding: 0 0.85rem 0 0;
+  text-align: right;
+  color: #354235;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.growth-grid__count-title {
+  padding-left: 0.8rem;
+  min-width: 3.6rem;
+  text-align: center;
+}
+
+.growth-grid__count-title span {
+  display: inline-block;
+  color: #4d564d;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.08rem;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
 }
 
 .growth-grid__cell {
-  min-width: 3.8rem;
-  height: 3.35rem;
+  width: 4.4rem;
+  height: 4.4rem;
   padding: 0;
   border: 1px solid rgba(0, 0, 0, 0.18);
   border-radius: 6px;
   background: #fff;
   color: #2d3930;
-  font-size: 1.45rem;
+  font-size: 1.55rem;
   font-weight: 600;
   line-height: 1;
   text-transform: none;
@@ -534,8 +592,9 @@ button {
 .growth-grid__summary {
   display: inline-block;
   min-width: 4.2rem;
+  padding-left: 0.25rem;
   color: #556055;
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   font-weight: 600;
 }
 

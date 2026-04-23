@@ -118,16 +118,48 @@ function renderGrid() {
     return;
   }
 
+  const layout = document.createElement("div");
+  layout.className = "growth-grid-layout";
+
+  const yAxisTitle = document.createElement("div");
+  yAxisTitle.className = "growth-grid-layout__y-title";
+  yAxisTitle.textContent = "Dilution";
+  layout.appendChild(yAxisTitle);
+
   const table = document.createElement("table");
   table.className = "growth-grid";
 
   const thead = document.createElement("thead");
+  const axisRow = document.createElement("tr");
+  const cornerCell = document.createElement("th");
+  cornerCell.className = "growth-grid__corner";
+  cornerCell.rowSpan = 2;
+  cornerCell.setAttribute("aria-hidden", "true");
+  axisRow.appendChild(cornerCell);
+
+  const replicateTitle = document.createElement("th");
+  replicateTitle.scope = "colgroup";
+  replicateTitle.colSpan = state.grid[0].length;
+  replicateTitle.className = "growth-grid__axis-title";
+  replicateTitle.textContent = "Replicate";
+  axisRow.appendChild(replicateTitle);
+
+  const countTitle = document.createElement("th");
+  countTitle.scope = "col";
+  countTitle.rowSpan = 2;
+  countTitle.className = "growth-grid__count-title";
+  countTitle.innerHTML = "<span>Positive count</span>";
+  axisRow.appendChild(countTitle);
+  thead.appendChild(axisRow);
+
   const headerRow = document.createElement("tr");
-  headerRow.innerHTML = `
-    <th scope="col">Dilution</th>
-    ${state.grid[0].map((_, index) => `<th scope="col">Rep ${index + 1}</th>`).join("")}
-    <th scope="col">Positive count</th>
-  `;
+  state.grid[0].forEach((_, index) => {
+    const replicateLabel = document.createElement("th");
+    replicateLabel.scope = "col";
+    replicateLabel.className = "growth-grid__replicate-label";
+    replicateLabel.textContent = String(index + 1);
+    headerRow.appendChild(replicateLabel);
+  });
   thead.appendChild(headerRow);
   table.appendChild(thead);
 
@@ -136,7 +168,8 @@ function renderGrid() {
     const tr = document.createElement("tr");
     const labelCell = document.createElement("th");
     labelCell.scope = "row";
-    labelCell.textContent = `Dilution ${rowIndex + 1}`;
+    labelCell.className = "growth-grid__row-label";
+    labelCell.textContent = String(rowIndex + 1);
     tr.appendChild(labelCell);
 
     row.forEach((value, columnIndex) => {
@@ -180,7 +213,8 @@ function renderGrid() {
   table.appendChild(tbody);
   elements.growthGrid.className = "growth-grid-shell";
   elements.growthGrid.innerHTML = "";
-  elements.growthGrid.appendChild(table);
+  layout.appendChild(table);
+  elements.growthGrid.appendChild(layout);
 }
 
 function renderSummaryTable(values) {

@@ -17,9 +17,6 @@
           <h1>Manual QLD calculator</h1>
           <p class="muted">
             Maximum Likelihood Estimation (MLE) used with limiting dilutions to estimate the number of organisms in a given volume.<br>
-            The value "MLE" is therefore the number of organisms pipetted into the first well, and diluted with this dilution factor across a series.<br>
-            "# of dilutions" is the amount of grown wells in your sample, and "# of replicates" is the amount of replicate dilution series you used.<br>
-            The optimal experiment is 4 replicate dilution series, where you have done 3 experimental replicates, or in other words, you have diluted 1 treatment 12 times.<br>
             This implementation is written by Amogh Jalihal,
             <a href="https://github.com/springerlab/QuantitativeLimitingDilutions">https://github.com/springerlab/QuantitativeLimitingDilutions</a>.
             <br>
@@ -122,6 +119,11 @@
               <span id="curve-caption" class="meta-line">Updates with the selected wells</span>
             </div>
             <div id="likelihood-plot" class="likelihood-plot empty-state">Create a grid to see the fitted upstream QLD objective.</div>
+            <div class="likelihood-notes">
+              <p>The value "MLE" is therefore the number of organisms pipetted into the first well, and diluted with this dilution factor across a series.</p>
+              <p>"# of dilutions" is the amount of grown wells in your sample, and "# of replicates" is the amount of replicate dilution series you used.</p>
+              <p>The optimal experiment is 4 replicate dilution series, where you have done 3 experimental replicates, or in other words, you have diluted 1 treatment 12 times.</p>
+            </div>
           </div>
         </section>
       </div>
