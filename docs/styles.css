@@ -1,15 +1,21 @@
 :root {
-  --viewer-ink: rgb(50, 50, 50);
-  --viewer-link: #1eaedb;
-  --viewer-link-hover: #0fa0ce;
-  --viewer-border: #d1d1d1;
-  --viewer-line: #e1e1e1;
-  --viewer-panel: #f5f5f5;
-  --viewer-panel-alt: #ededed;
-  --viewer-bg: #fafafa;
-  --viewer-success: #2f7d32;
+  --viewer-ink: #342b1d;
+  --viewer-link: #8b5e12;
+  --viewer-link-hover: #6f4b0e;
+  --viewer-border: #d8ccb1;
+  --viewer-line: #e8ddc7;
+  --viewer-panel: #fbf7ef;
+  --viewer-panel-alt: #f5efdf;
+  --viewer-bg: #fffdfa;
+  --viewer-success: #c49327;
   --viewer-danger: #9d2a2a;
-  --viewer-warning: #946200;
+  --viewer-warning: #8b5e12;
+  --viewer-accent: #c49327;
+  --viewer-accent-deep: #8b5e12;
+  --viewer-accent-soft: rgba(196, 147, 39, 0.14);
+  --viewer-accent-soft-strong: rgba(196, 147, 39, 0.22);
+  --viewer-complement: #46513b;
+  --viewer-complement-soft: #edf0e7;
 }
 
 * {
@@ -112,12 +118,12 @@ p {
 }
 
 .muted {
-  color: #666;
+  color: #6f6554;
 }
 
 .meta-line {
   font-size: 1.3rem;
-  color: #555;
+  color: #645a49;
 }
 
 input,
@@ -140,14 +146,14 @@ input:focus,
 textarea:focus,
 button:focus-visible,
 .growth-grid__cell:focus-visible {
-  outline: 2px solid rgba(31, 111, 67, 0.24);
+  outline: 2px solid rgba(196, 147, 39, 0.34);
   outline-offset: 1px;
 }
 
 .field-label {
   display: inline-block;
   margin-bottom: 0.4rem;
-  color: #444;
+  color: #5a4c35;
   font-size: 1.2rem;
   font-weight: 600;
   letter-spacing: 0.08rem;
@@ -159,9 +165,16 @@ button {
   border: 1px solid var(--viewer-border);
   border-radius: 6px;
   padding: 0.8rem 1.2rem;
-  background: #fff;
+  background: #fffdf8;
   color: var(--viewer-ink);
   cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+}
+
+button:hover,
+button:focus {
+  border-color: rgba(139, 94, 18, 0.42);
+  background: #f7efdb;
 }
 
 .button-row {
@@ -172,27 +185,27 @@ button {
 }
 
 .button-primary {
-  background: #1f6f43;
-  border-color: #1f6f43;
-  color: #fff;
+  background: var(--viewer-accent);
+  border-color: var(--viewer-accent);
+  color: #221a0c;
 }
 
 .button-primary:hover,
 .button-primary:focus {
-  background: #185a36;
-  border-color: #185a36;
+  background: #ae7f1e;
+  border-color: #ae7f1e;
 }
 
 .button-soft-success {
-  background: rgba(31, 111, 67, 0.12);
-  border-color: rgba(31, 111, 67, 0.26);
-  color: #1f6f43;
+  background: var(--viewer-accent-soft);
+  border-color: rgba(196, 147, 39, 0.32);
+  color: var(--viewer-accent-deep);
 }
 
 .button-soft-success:hover,
 .button-soft-success:focus {
-  background: rgba(31, 111, 67, 0.18);
-  border-color: rgba(31, 111, 67, 0.34);
+  background: var(--viewer-accent-soft-strong);
+  border-color: rgba(196, 147, 39, 0.42);
 }
 
 .tool-page-stack {
@@ -240,7 +253,7 @@ button {
 
 .hint {
   margin-top: 0.2rem;
-  color: #5f5c4a;
+  color: #70654a;
   font-size: 1.35rem;
 }
 
@@ -261,7 +274,7 @@ button {
 
 .metric-card {
   padding: 1rem 1.1rem;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(139, 94, 18, 0.12);
   border-radius: 8px;
   background: #fff;
 }
@@ -269,7 +282,7 @@ button {
 .metric-card__label {
   display: block;
   margin-bottom: 0.35rem;
-  color: #666;
+  color: #786e5d;
   font-size: 1.15rem;
   text-transform: uppercase;
   letter-spacing: 0.08rem;
@@ -304,9 +317,9 @@ button {
 
 .summary-export__table-shell {
   overflow-x: auto;
-  border: 1px solid rgba(33, 44, 39, 0.1);
+  border: 1px solid rgba(139, 94, 18, 0.12);
   border-radius: 10px;
-  background: rgba(242, 245, 241, 0.78);
+  background: rgba(245, 239, 223, 0.78);
 }
 
 .summary-export__table {
@@ -324,7 +337,7 @@ button {
 }
 
 .summary-export__table thead th {
-  color: #4b574b;
+  color: #675637;
   font-size: 1.15rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -335,10 +348,10 @@ button {
   display: block;
   width: 100%;
   padding: 0.8rem 0.9rem;
-  border: 1px solid rgba(31, 111, 67, 0.12);
+  border: 1px solid rgba(196, 147, 39, 0.18);
   border-radius: 8px;
   background: #fff;
-  color: #243126;
+  color: #3a3020;
   font-size: 1.35rem;
   font-weight: 600;
 }
@@ -359,7 +372,7 @@ button {
 .likelihood-plot {
   margin-top: 0.2rem;
   padding: 0.8rem;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(139, 94, 18, 0.12);
   border-radius: 10px;
   background: transparent;
 }
@@ -369,14 +382,14 @@ button {
   gap: 0.6rem;
   margin-top: 1.2rem;
   padding: 1.1rem 1.2rem;
-  border: 1px solid rgba(31, 111, 67, 0.12);
+  border: 1px solid rgba(196, 147, 39, 0.18);
   border-radius: 10px;
-  background: rgba(242, 245, 241, 0.7);
+  background: rgba(248, 242, 228, 0.84);
 }
 
 .likelihood-notes p {
   margin-bottom: 0;
-  color: #415041;
+  color: #5f5138;
 }
 
 .likelihood-plot svg {
@@ -391,44 +404,44 @@ button {
 }
 
 .plot-axis {
-  stroke: rgba(0, 0, 0, 0.42);
+  stroke: rgba(52, 43, 29, 0.38);
   stroke-width: 1.25;
 }
 
 .plot-axis-line {
-  stroke: rgba(0, 0, 0, 0.42);
+  stroke: rgba(52, 43, 29, 0.38);
   stroke-width: 1.25;
 }
 
 .plot-guide {
-  stroke: rgba(0, 0, 0, 0.08);
+  stroke: rgba(139, 94, 18, 0.12);
   stroke-width: 1;
   stroke-dasharray: 4 5;
 }
 
 .plot-curve {
   fill: none;
-  stroke: #1f6f43;
+  stroke: var(--viewer-accent);
   stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .plot-mle {
-  stroke: #946200;
+  stroke: var(--viewer-accent-deep);
   stroke-width: 2;
   stroke-dasharray: 6 6;
 }
 
 .plot-dot {
-  fill: #946200;
+  fill: var(--viewer-accent-deep);
   stroke: #fff;
   stroke-width: 1.5;
 }
 
 .plot-label,
 .plot-axis-title {
-  fill: #555;
+  fill: #5c513f;
   font-size: 12px;
 }
 
@@ -442,7 +455,7 @@ button {
   place-items: center;
   min-height: 16rem;
   padding: 2rem;
-  color: #666;
+  color: #756a57;
   text-align: center;
   border: 1px dashed var(--viewer-border);
   border-radius: 8px;
@@ -478,7 +491,7 @@ button {
   display: grid;
   place-items: center;
   min-width: 3.2rem;
-  color: #4d564d;
+  color: #5f5138;
   font-size: 1.72rem;
   font-weight: 600;
   letter-spacing: 0.08rem;
@@ -523,7 +536,7 @@ button {
 .growth-grid__axis-title {
   padding: 0 0.28rem 20px;
   text-align: center;
-  color: #4d564d;
+  color: #675637;
   font-size: 1.18rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -533,7 +546,7 @@ button {
 .growth-grid__replicate-label {
   padding: 0 0.28rem 0.8rem;
   text-align: center;
-  color: #4d564d;
+  color: #675637;
   font-size: 1.45rem;
   font-weight: 600;
 }
@@ -542,7 +555,7 @@ button {
   width: 3.2rem;
   padding: 0 1rem 0 0;
   text-align: right;
-  color: #354235;
+  color: #54462f;
   font-size: 1.5rem;
   font-weight: 600;
 }
@@ -558,7 +571,7 @@ button {
   position: absolute;
   top: 50%;
   right: calc(-1 * (var(--growth-grid-axis-gap) + var(--growth-grid-count-title-width)));
-  color: #4d564d;
+  color: #675637;
   font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: 0.08rem;
@@ -574,7 +587,7 @@ button {
   border: 1px solid rgba(0, 0, 0, 0.18);
   border-radius: 6px;
   background: #fff;
-  color: #2d3930;
+  color: #342b1d;
   font-size: 1.55rem;
   font-weight: 600;
   line-height: 1;
@@ -589,20 +602,20 @@ button {
 
 .growth-grid__cell:hover,
 .growth-grid__cell:focus {
-  border-color: rgba(31, 111, 67, 0.42);
+  border-color: rgba(196, 147, 39, 0.5);
 }
 
 .growth-grid__cell--positive {
-  color: #fff;
-  border-color: #1f6f43;
-  background: #1f6f43;
+  color: #241b0d;
+  border-color: var(--viewer-accent);
+  background: var(--viewer-accent);
 }
 
 .growth-grid__summary {
   display: inline-block;
   min-width: 4.2rem;
   padding-left: 0.55rem;
-  color: #556055;
+  color: #6a5f4d;
   font-size: 1.4rem;
   font-weight: 600;
   text-align: center;

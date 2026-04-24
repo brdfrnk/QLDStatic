@@ -281,7 +281,7 @@ function renderCurve(curve) {
   const markerX = curve.peak_x ? scaleX(curve.peak_x) : null;
   const guideLevels = [0.25, 0.5, 0.75];
   elements.curveCaption.textContent = curve.peak_x
-    ? `Relative Poisson likelihood peaks near ${curve.peak_label}.`
+    ? `Relative Poisson likelihood peaks near estimate ${curve.peak_label}.`
     : "Updates with the selected wells";
 
   elements.likelihoodPlot.className = "likelihood-plot";

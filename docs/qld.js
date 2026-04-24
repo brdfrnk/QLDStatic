@@ -248,6 +248,7 @@ export function quantifyInputFromSerialDilution(grid, fold) {
   if (!solution || !solution.success || !(solution.x > 0)) {
     return {
       mle: null,
+      shpm_mle: null,
       lower: null,
       upper: null,
       variance: null,
@@ -256,11 +257,13 @@ export function quantifyInputFromSerialDilution(grid, fold) {
     };
   }
 
+  // The mathematically consistent estimate is the maximizer of the joint
+  // Poisson likelihood. SHPM is retained only as a secondary diagnostic.
+  const mle = solution.x;
   const shpmSolution = nelderMead1D(
     (value) => shpmError(value, growthTable, numericFold),
-    solution.x,
+    mle,
   );
-  const mle = shpmSolution.x;
   const information = fisherInformation(mle, growthTable, numericFold);
   const variance = information > 0 ? 1 / information : Number.NaN;
   const standardDeviation = Number.isFinite(variance) && variance >= 0 ? Math.sqrt(variance) : Number.NaN;
@@ -269,6 +272,7 @@ export function quantifyInputFromSerialDilution(grid, fold) {
 
   return {
     mle,
+    shpm_mle: shpmSolution.x,
     lower,
     upper,
     variance,
@@ -357,37 +361,36 @@ export function buildLikelihoodCurve(grid, fold, result, sampleCount = DEFAULT_S
 
   const logMin = Math.log10(xMin);
   const logMax = Math.log10(xMax);
-  const xValues = [];
-  const objectiveValues = [];
+  const baseSamples = Math.max(sampleCount - 1, 2);
+  const xValues = [result.mle];
 
-  for (let index = 0; index < sampleCount; index += 1) {
-    const x = 10 ** (logMin + (((logMax - logMin) * index) / (sampleCount - 1)));
-    xValues.push(x);
-    objectiveValues.push(poissonJoint(x, grid, fold));
+  for (let index = 0; index < baseSamples; index += 1) {
+    xValues.push(10 ** (logMin + (((logMax - logMin) * index) / (baseSamples - 1))));
   }
 
+  xValues.sort((left, right) => left - right);
+  const objectiveAtEstimate = poissonJoint(result.mle, grid, fold);
+  if (!Number.isFinite(objectiveAtEstimate)) {
+    return null;
+  }
+
+  const objectiveValues = xValues.map((x) => poissonJoint(x, grid, fold));
   const finiteValues = objectiveValues.filter((value) => Number.isFinite(value));
   if (!finiteValues.length) {
     return null;
   }
 
-  let peakIndex = 0;
-  let peakObjective = Number.POSITIVE_INFINITY;
-  objectiveValues.forEach((value, index) => {
-    if (Number.isFinite(value) && value < peakObjective) {
-      peakObjective = value;
-      peakIndex = index;
-    }
-  });
-
   return {
     x_min: xMin,
     x_max: xMax,
-    peak_x: xValues[peakIndex],
-    peak_label: formatNumber(xValues[peakIndex]),
+    peak_x: result.mle,
+    peak_label: formatNumber(result.mle),
     points: xValues.map((x, index) => ({
       x,
-      likelihood: Number.isFinite(objectiveValues[index]) ? Math.exp(-(objectiveValues[index] - peakObjective)) : 0,
+      likelihood:
+        Number.isFinite(objectiveValues[index])
+          ? Math.exp(-(objectiveValues[index] - objectiveAtEstimate))
+          : 0,
     })),
   };
 }
@@ -409,6 +412,7 @@ export function estimateQldPayload(grid, fold) {
     status: result.status,
     message: result.message,
     mle: result.mle,
+    shpm_mle: result.shpm_mle,
     lower: result.lower,
     upper: result.upper,
     variance: result.variance,

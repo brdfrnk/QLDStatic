@@ -46,6 +46,25 @@ This repository now also includes a GitHub Pages compatible calculator under `do
 - `docs/app.js` renders the manual grid UI, exports, and fit curve with no backend API.
 - `docs/.nojekyll` allows direct static serving on GitHub Pages.
 
+### Browser optimization implementation
+
+The original Python implementation in `QLD/PoissonJoint.py` relies on `scipy.optimize.minimize(..., method="Nelder-Mead")` twice:
+
+1. `PoissonJoint(...)` is minimized first to get a stable starting point from the joint Poisson likelihood.
+2. `shpm_error(...)` is minimized second to produce the displayed estimate and downstream confidence interval.
+
+For the static browser calculator we originally used a browser-side optimization repository to replace that SciPy step. The current codebase keeps the same implementation pattern directly inside `docs/qld.js` as `nelderMead1D(...)`, so the site can run entirely in the browser with no Python runtime, no API, and no SciPy dependency.
+
+`estimateQldPayload(...)` wires this together for the UI:
+
+- it converts the growth grid into dilution observations,
+- runs the browser Nelder-Mead optimizer against `PoissonJoint(...)` to get the reported organism estimate,
+- optionally computes the historical SHPM fit as a secondary diagnostic,
+- computes Fisher information and the CI from the Poisson MLE,
+- and returns the relative-fit curve data consumed by `docs/app.js`.
+
+The Poisson MLE is the statistically consistent estimate for this repository's stated model, because the likelihood, the displayed "MLE", and the Fisher-information confidence interval are then all derived from the same objective. The SHPM objective matches dilution-level positive fractions, but it is not itself the likelihood used in the mathematical derivation above.
+
 ### Local preview
 
 You can open `docs/index.html` directly in a browser for quick checks, or serve the folder with any static file server.

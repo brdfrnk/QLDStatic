@@ -15,9 +15,9 @@ const fixtures = [
       [false, false, false, false],
     ],
     expected: {
-      mle_display: "0.765007",
-      ci_display: "-0.211605 to 1.74162",
-      variance_display: "0.248275",
+      mle_display: "0.928711",
+      ci_display: "-0.191912 to 2.04933",
+      variance_display: "0.326894",
       summary: "D1: 2 / 4, D2: 1 / 4, D3: 0 / 4",
     },
   },
@@ -39,9 +39,9 @@ const fixtures = [
       [false, false, false, false],
     ],
     expected: {
-      mle_display: "1.24956e6",
-      ci_display: "-155978 to 2.65509e6",
-      variance_display: "5.14246e11",
+      mle_display: "276347",
+      ci_display: "-29447.7 to 582143",
+      variance_display: "2.43416e10",
       summary:
         "D1: 4 / 4, D2: 4 / 4, D3: 4 / 4, D4: 4 / 4, D5: 4 / 4, D6: 3 / 4, D7: 3 / 4, D8: 0 / 4, D9: 0 / 4, D10: 0 / 4, D11: 0 / 4, D12: 0 / 4",
     },
@@ -58,9 +58,9 @@ const fixtures = [
       [false, false, false, false],
     ],
     expected: {
-      mle_display: "12509",
-      ci_display: "-1688.52 to 26706.5",
-      variance_display: "5.24701e7",
+      mle_display: "12.7054",
+      ci_display: "-1.54391 to 26.9546",
+      variance_display: "52.8535",
       summary: "D1: 3 / 4, D2: 4 / 4, D3: 4 / 4, D4: 4 / 4, D5: 3 / 4, D6: 0 / 4",
     },
   },
@@ -74,17 +74,11 @@ test("calculator fixtures remain numerically stable", () => {
     const bestPoint = payload.curve.points.reduce((best, point) =>
       point.likelihood > best.likelihood ? point : best,
     );
-    let objectivePeak = { x: null, fx: Number.POSITIVE_INFINITY };
-    for (const point of payload.curve.points) {
-      const fx = poissonJoint(point.x, fixture.grid, fixture.fold);
-      if (fx < objectivePeak.fx) {
-        objectivePeak = { x: point.x, fx };
-      }
-    }
     assert.ok(
-      Math.abs(bestPoint.x - objectivePeak.x) / objectivePeak.x < 1e-9,
-      `${fixture.name} curve peak tracks Poisson objective`,
+      Math.abs(bestPoint.x - payload.mle) / payload.mle < 1e-12,
+      `${fixture.name} curve peak tracks displayed estimate`,
     );
+    assert.equal(payload.curve.peak_label, payload.mle_display, `${fixture.name} curve label matches estimate`);
     assert.equal(payload.mle_display, fixture.expected.mle_display, `${fixture.name} mle display`);
     assert.equal(payload.ci_display, fixture.expected.ci_display, `${fixture.name} ci display`);
     assert.equal(payload.variance_display, fixture.expected.variance_display, `${fixture.name} variance display`);
