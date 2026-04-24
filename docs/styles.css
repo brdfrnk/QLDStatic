@@ -463,18 +463,21 @@ button {
 }
 
 .growth-grid-layout {
+  --growth-grid-axis-gap: 20px;
+  --growth-grid-count-title-width: 1.3rem;
+  position: relative;
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 1.1rem;
-  align-items: start;
+  gap: var(--growth-grid-axis-gap);
+  align-items: center;
+  padding-right: calc(var(--growth-grid-axis-gap) + var(--growth-grid-count-title-width));
 }
 
 .growth-grid-layout__y-title {
-  align-self: start;
+  align-self: center;
   display: grid;
   place-items: center;
   min-width: 3.2rem;
-  margin-top: 3.2rem;
   color: #4d564d;
   font-size: 1.72rem;
   font-weight: 600;
@@ -490,6 +493,7 @@ button {
 }
 
 .growth-grid {
+  position: relative;
   width: max-content;
   min-width: 0;
   border-collapse: separate;
@@ -517,7 +521,7 @@ button {
 }
 
 .growth-grid__axis-title {
-  padding: 0 0.28rem 0.3rem;
+  padding: 0 0.28rem 20px;
   text-align: center;
   color: #4d564d;
   font-size: 1.18rem;
@@ -546,20 +550,21 @@ button {
 .growth-grid__count-title {
   width: 4.8rem;
   padding-left: 0.55rem;
-  padding-top: 3.2rem;
-  text-align: center;
+  text-align: left;
   vertical-align: middle;
 }
 
 .growth-grid__count-title span {
-  display: inline-block;
+  position: absolute;
+  top: 50%;
+  right: calc(-1 * (var(--growth-grid-axis-gap) + var(--growth-grid-count-title-width)));
   color: #4d564d;
   font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: 0.08rem;
   text-transform: uppercase;
   writing-mode: vertical-rl;
-  transform: none;
+  transform: translateY(-50%);
 }
 
 .growth-grid__cell {
