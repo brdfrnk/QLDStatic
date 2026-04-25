@@ -242,10 +242,11 @@ function renderCurve(curve) {
   const margin = { top: 18, right: 22, bottom: 52, left: 54 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
+  const topPlotInset = 10;
   const logMin = Math.log10(curve.x_min);
   const logMax = Math.log10(curve.x_max);
   const scaleX = (value) => margin.left + (((Math.log10(value) - logMin) / (logMax - logMin || 1)) * innerWidth);
-  const scaleY = (value) => margin.top + ((1 - value) * innerHeight);
+  const scaleY = (value) => margin.top + topPlotInset + ((1 - value) * (innerHeight - topPlotInset));
   const scaledPoints = curve.points.map((point) => ({
     x: scaleX(point.x),
     y: scaleY(point.likelihood),

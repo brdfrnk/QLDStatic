@@ -2,11 +2,11 @@
   --viewer-ink: #342b1d;
   --viewer-link: #8b5e12;
   --viewer-link-hover: #6f4b0e;
-  --viewer-border: #d8ccb1;
-  --viewer-line: #e8ddc7;
-  --viewer-panel: #fbf7ef;
-  --viewer-panel-alt: #f5efdf;
-  --viewer-bg: #fffdfa;
+  --viewer-border: #cfcfcf;
+  --viewer-line: #dedede;
+  --viewer-panel: #f8f8f8;
+  --viewer-panel-alt: #f1f1f1;
+  --viewer-bg: #ffffff;
   --viewer-success: #c49327;
   --viewer-danger: #9d2a2a;
   --viewer-warning: #8b5e12;
@@ -274,7 +274,7 @@ button:focus {
 
 .metric-card {
   padding: 1rem 1.1rem;
-  border: 1px solid rgba(139, 94, 18, 0.12);
+  border: 1px solid #dedede;
   border-radius: 8px;
   background: #fff;
 }
@@ -317,9 +317,9 @@ button:focus {
 
 .summary-export__table-shell {
   overflow-x: auto;
-  border: 1px solid rgba(139, 94, 18, 0.12);
+  border: 1px solid #dedede;
   border-radius: 10px;
-  background: rgba(245, 239, 223, 0.78);
+  background: #f3f3f3;
 }
 
 .summary-export__table {
@@ -348,7 +348,7 @@ button:focus {
   display: block;
   width: 100%;
   padding: 0.8rem 0.9rem;
-  border: 1px solid rgba(196, 147, 39, 0.18);
+  border: 1px solid #dedede;
   border-radius: 8px;
   background: #fff;
   color: #3a3020;
@@ -372,7 +372,7 @@ button:focus {
 .likelihood-plot {
   margin-top: 0.2rem;
   padding: 0.8rem;
-  border: 1px solid rgba(139, 94, 18, 0.12);
+  border: 1px solid #dedede;
   border-radius: 10px;
   background: transparent;
 }
@@ -382,9 +382,9 @@ button:focus {
   gap: 0.6rem;
   margin-top: 1.2rem;
   padding: 1.1rem 1.2rem;
-  border: 1px solid rgba(196, 147, 39, 0.18);
+  border: 1px solid #dedede;
   border-radius: 10px;
-  background: rgba(248, 242, 228, 0.84);
+  background: #f3f3f3;
 }
 
 .likelihood-notes p {
